@@ -4,7 +4,7 @@
 }:
 
 let
-  version = "0.8";
+  version = "0.9";
 in
   stdenv.mkDerivation rec {
     name = "sway-${version}";
@@ -13,7 +13,7 @@ in
       owner = "Sircmpwn";
       repo = "sway";
       rev = "${version}";
-      sha256 = "10i62cn1z7fwg0jwkskmzcaha39lprkl4zvkp59jr5wvpjligdq3";
+      sha256 = "05m1g239nja3prdrm902iab0wrzrnfzhb4y1nxff5k7fvinvmxig";
     };
 
     nativeBuildInputs = [ makeWrapper cmake pkgconfig asciidoc libxslt docbook_xsl ];

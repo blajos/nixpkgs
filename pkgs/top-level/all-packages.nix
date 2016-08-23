@@ -17704,4 +17704,5 @@ in
   puppet-lint = callPackage ../tools/system/puppet-lint {};
 
   puppet = callPackage ../tools/system/puppet {};
+
 }

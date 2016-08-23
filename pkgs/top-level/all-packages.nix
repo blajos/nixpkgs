@@ -17640,4 +17640,6 @@ in
   zuki-themes = callPackage ../misc/themes/zuki { };
 
   zoom-us = qt55.callPackage ../applications/networking/instant-messengers/zoom-us {};
+
+  libgtop11dotnet = callPackage ../tools/security/libgtop11dotnet {};
 }

@@ -13,7 +13,7 @@ in
       owner = "Sircmpwn";
       repo = "sway";
       rev = "${version}";
-      sha256 = "05m1g239nja3prdrm902iab0wrzrnfzhb4y1nxff5k7fvinvmxig";
+      sha256 = "0qqqg23rknxnjcgvkfrx3pijqc3dvi74qmmavq07vy2qfs1xlwg0";
     };
 
     nativeBuildInputs = [ makeWrapper cmake pkgconfig asciidoc libxslt docbook_xsl ];

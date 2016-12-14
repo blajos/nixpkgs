@@ -15,7 +15,7 @@
 stdenv.mkDerivation {
   name = "lldb-${version}";
 
-  src = fetch "lldb" "0dasg12gf5crrd9pbi5rd1y8vwlgqp8nxgw9g4z47w3x2i28zxp3";
+  src = fetch "lldb" "18z8vhfgh4m57hl66i83cp4d4mv3i86z2hjhbp5rvqs7d88li49l";
 
   postUnpack = ''
     # Hack around broken standalone builf as of 3.8
@@ -25,12 +25,9 @@ stdenv.mkDerivation {
     cp "$(ls -d llvm-*.src)/lib/Support/regex_impl.h" "$srcDir/tools/lib/Support/"
   '';
 
-  buildInputs = [ cmake python which swig ncurses zlib libedit ];
+  buildInputs = [ cmake python which swig ncurses zlib libedit llvm ];
 
-  preConfigure = ''
-    export CXXFLAGS="-pthread"
-    export LDFLAGS="-ldl"
-  '';
+  hardeningDisable = [ "format" ];
 
   cmakeFlags = [
     "-DCMAKE_BUILD_TYPE=Release"
@@ -40,6 +37,7 @@ stdenv.mkDerivation {
     "-DCLANG_MAIN_INCLUDE_DIR=${clang-unwrapped}/include"
     "-DPYTHON_VERSION_MAJOR=2"
     "-DPYTHON_VERSION_MINOR=7"
+    "-DLLDB_DISABLE_LIBEDIT=1" # https://llvm.org/bugs/show_bug.cgi?id=28898
   ];
 
   enableParallelBuilding = true;

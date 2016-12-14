@@ -1,11 +1,11 @@
 { stdenv, fetchurl, openssl, curl, coreutils, gawk, bash, which }:
 
 stdenv.mkDerivation {
-  name = "esniper-2.31.0";
+  name = "esniper-2.32.0";
 
   src = fetchurl {
-    url    = "mirror://sourceforge/esniper/esniper-2-31-0.tgz";
-    sha256 = "0xn6gdyr0c18khwcsi2brp49wkancrsrxxca7hvbawhbf263glih";
+    url    = "mirror://sourceforge/esniper/esniper-2-32-0.tgz";
+    sha256 = "04lka4d0mnrwc369yzvq28n8qi1qbm8810ykx6d0a4kaghiybqsy";
   };
 
   buildInputs = [ openssl curl ];
@@ -16,7 +16,7 @@ stdenv.mkDerivation {
 
   postInstall = ''
     sed <"frontends/snipe" >"$out/bin/snipe" \
-      -e "2i export PATH=\"$out/bin:${coreutils}/bin:${gawk}/bin:${bash}/bin:${which}/bin:\$PATH\""
+      -e "2i export PATH=\"$out/bin:${stdenv.lib.makeBinPath [ coreutils gawk bash which ]}:\$PATH\""
     chmod 555 "$out/bin/snipe"
   '';
 

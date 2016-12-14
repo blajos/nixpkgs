@@ -47,6 +47,7 @@ let
     kcolorchooser = callPackage ./kcolorchooser.nix {};
     kdegraphics-thumbnailers = callPackage ./kdegraphics-thumbnailers.nix {};
     kdenetwork-filesharing = callPackage ./kdenetwork-filesharing.nix {};
+    kdf = callPackage ./kdf.nix {};
     kgpg = callPackage ./kgpg.nix { inherit (pkgs.kde4) kdepimlibs; };
     khelpcenter = callPackage ./khelpcenter.nix {};
     kio-extras = callPackage ./kio-extras.nix {};
@@ -61,6 +62,11 @@ let
     spectacle = callPackage ./spectacle.nix {};
 
     l10n = pkgs.recurseIntoAttrs (import ./l10n.nix { inherit callPackage lib pkgs; });
+
+    # External packages
+    kipi-plugins = callPackage ../../../applications/graphics/kipi-plugins/5.x.nix {};
+    ktorrent = callPackage ../../../applications/networking/p2p/ktorrent/5.nix { };
+    libktorrent = callPackage ../../../development/libraries/libktorrent/5.nix { };
   };
 
 in packages

@@ -4,11 +4,11 @@
 stdenv.mkDerivation rec {
   name    = "${pname}${if withGnome then "-gnome" else ""}-${version}";
   pname   = "NetworkManager-vpnc";
-  version = networkmanager.version;
+  version = "1.2.4";
 
   src = fetchurl {
     url    = "mirror://gnome/sources/${pname}/${networkmanager.major}/${pname}-${version}.tar.xz";
-    sha256 = "e900f6500026f8c3ee4feb92e1d0a0c0abbee9ba507dad915b47a8ab7df9e1f3";
+    sha256 = "01gv205p51fsz2pfpch81ax0xm8gwj6646acag5hh0p931j53irr";
   };
 
   buildInputs = [ vpnc networkmanager libsecret ]
@@ -24,10 +24,10 @@ stdenv.mkDerivation rec {
 
   preConfigure = ''
      substituteInPlace "configure" \
-       --replace "/sbin/sysctl" "${procps}/sbin/sysctl"
+       --replace "/sbin/sysctl" "${procps}/bin/sysctl"
      substituteInPlace "src/nm-vpnc-service.c" \
-       --replace "/sbin/vpnc" "${vpnc}/sbin/vpnc" \
-       --replace "/sbin/modprobe" "${kmod}/sbin/modprobe"
+       --replace "/sbin/vpnc" "${vpnc}/bin/vpnc" \
+       --replace "/sbin/modprobe" "${kmod}/bin/modprobe"
   '';
 
   meta = {

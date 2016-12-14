@@ -1,4 +1,4 @@
-{ stdenv, fetchurl, pkgconfig, gettext, perl, python
+{ stdenv, fetchurl, fetchpatch, pkgconfig, gettext, perl, python
 , libiconv, libintlOrEmpty, zlib, libffi, pcre, libelf
 
 # this is just for tests (not in closure of any regular package)
@@ -40,7 +40,7 @@ let
   '';
 
   ver_maj = "2.48";
-  ver_min = "1";
+  ver_min = "2";
 in
 
 stdenv.mkDerivation rec {
@@ -48,12 +48,18 @@ stdenv.mkDerivation rec {
 
   src = fetchurl {
     url = "mirror://gnome/sources/glib/${ver_maj}/${name}.tar.xz";
-    sha256 = "74411bff489cb2a3527bac743a51018841a56a4d896cc1e0d0d54f8166a14612";
+    sha256 = "f25e751589cb1a58826eac24fbd4186cda4518af772806b666a3f91f66e6d3f4";
   };
 
-  patches = optional stdenv.isDarwin ./darwin-compilation.patch ++ optional doCheck ./skip-timer-test.patch;
+  patches = optional stdenv.isDarwin ./darwin-compilation.patch
+    ++ optional doCheck ./skip-timer-test.patch
+    ++ optional doCheck (fetchpatch {
+        name = "test-regex.diff"; # https://bugzilla.gnome.org/show_bug.cgi?id=767240
+        url = "https://git.gnome.org/browse/glib/patch/?id=6d1178b2d9";
+        sha256 = "1n8i2kxc78rp3vwiapwdcr8lnacrn3qbdz0vi8ihf76j1sh07n5c";
+      });
 
-  outputs = [ "dev" "out" "docdev" ];
+  outputs = [ "out" "dev" "devdoc" ];
   outputBin = "dev";
 
   setupHook = ./setup-hook.sh;

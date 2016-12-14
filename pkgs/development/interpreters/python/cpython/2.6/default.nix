@@ -1,4 +1,4 @@
-{ stdenv, fetchurl, zlib ? null, zlibSupport ? true, bzip2, less, includeModules ? false
+{ stdenv, fetchurl, zlib ? null, zlibSupport ? true, bzip2, includeModules ? false
 , sqlite, tcl, tk, xlibsWrapper, openssl, readline, db, ncurses, gdbm, self, callPackage
 , python26Packages }:
 
@@ -36,7 +36,7 @@ let
       done
     '' + optionalString (stdenv ? cc && stdenv.cc.libc != null) ''
       for i in Lib/plat-*/regen; do
-        substituteInPlace $i --replace /usr/include/ ${stdenv.cc.libc}/include/
+        substituteInPlace $i --replace /usr/include/ ${stdenv.cc.libc.dev or stdenv.cc.libc}/include/
       done
     '' + optionalString stdenv.isCygwin ''
       # On Cygwin, `make install' tries to read this Makefile.
@@ -53,8 +53,6 @@ let
     [ bzip2 openssl ]++ optionals includeModules [ db openssl ncurses gdbm readline xlibsWrapper tcl tk sqlite ]
     ++ optional zlibSupport zlib;
 
-  propagatedBuildInputs = [ less ];
-
   mkPaths = paths: {
     C_INCLUDE_PATH = makeSearchPathOutput "dev" "include" paths;
     LIBRARY_PATH = makeLibraryPath paths;
@@ -66,8 +64,8 @@ let
     name = "python${if includeModules then "" else "-minimal"}-${version}";
     pythonVersion = majorVersion;
 
-    inherit majorVersion version src patches buildInputs propagatedBuildInputs
-            preConfigure configureFlags;
+    inherit majorVersion version src patches buildInputs preConfigure
+            configureFlags;
 
     inherit (mkPaths buildInputs) C_INCLUDE_PATH LIBRARY_PATH;
 
@@ -93,6 +91,8 @@ let
         paxmark E $out/bin/python${majorVersion}
 
         ${ optionalString includeModules "$out/bin/python ./setup.py build_ext"}
+
+        rm "$out"/lib/python*/plat-*/regen # refers to glibc.dev
       '';
 
     passthru = rec {

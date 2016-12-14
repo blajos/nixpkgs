@@ -13,7 +13,7 @@
   enableOfficialBranding ? false
 }:
 
-let version = "45.2.0"; in
+let version = "45.5.1"; in
 let verName = "${version}"; in
 
 stdenv.mkDerivation rec {
@@ -21,7 +21,7 @@ stdenv.mkDerivation rec {
 
   src = fetchurl {
     url = "mirror://mozilla/thunderbird/releases/${verName}/source/thunderbird-${verName}.source.tar.xz";
-    sha256 = "1h1p14zswrg71qvzshwvw03mhicwwkfg29hvnj56cf41nb5qj8xx";
+    sha512 = "f6dc5f526e50facb9947627fcbc8db222cc20438fa62c552090dcabeabcc31dba2c66c20345090deaf5b58fd42b54938935eb1b3904528dce5949fd4cfc1ceb7";
   };
 
   buildInputs = # from firefox30Pkgs.xulrunner, without gstreamer and libvpx

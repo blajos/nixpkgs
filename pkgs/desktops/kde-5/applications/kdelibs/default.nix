@@ -9,7 +9,11 @@
 kdeApp {
   name = "kdelibs";
 
-  outputs = [ "out" ];
+  outputs = [ "out" "dev" ];
+
+  outputInclude = "out";
+
+  setOutputFlags = false;
 
   nativeBuildInputs = [
     automoc4 bison cmake flex libxslt perl pkgconfig shared_mime_info
@@ -27,7 +31,7 @@ kdeApp {
   ];
 
   # cmake does not detect path to `ilmbase`
-  NIX_CFLAGS_COMPILE = "-I${ilmbase}/include/OpenEXR";
+  NIX_CFLAGS_COMPILE = "-I${ilmbase.dev}/include/OpenEXR";
 
   cmakeFlags = [
     "-DDOCBOOKXML_CURRENTDTD_DIR=${docbook_xml_dtd_42}/xml/dtd/docbook"
@@ -35,8 +39,6 @@ kdeApp {
     "-DWITH_SOLID_UDISKS2=ON"
     "-DKDE_DEFAULT_HOME=.kde"
   ];
-
-  setupHook = ./setup-hook.sh;
 
   meta = {
     platforms = lib.platforms.linux;

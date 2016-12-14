@@ -113,6 +113,14 @@ common = { pname, version, sha512 }: stdenv.mkDerivation rec {
       "$out/bin/firefox" --version
     '';
 
+  postFixup =
+    # Fix notifications. LibXUL uses dlopen for this, unfortunately; see #18712.
+    ''
+      patchelf --set-rpath "${lib.getLib libnotify
+        }/lib:$(patchelf --print-rpath "$out"/lib/firefox-*/libxul.so)" \
+          "$out"/lib/firefox-*/libxul.so
+    '';
+
   meta = {
     description = "A web browser" + lib.optionalString (pname == "firefox-esr") " (Extended Support Release)";
     homepage = http://www.mozilla.com/en-US/firefox/;
@@ -132,14 +140,14 @@ in {
 
   firefox-unwrapped = common {
     pname = "firefox";
-    version = "48.0.1";
-    sha512 = "819f726a7e630f62e3d4019d8289341019941df2288e67b1d88d5b16c3ce8636a852ae098905be4f8f2f2049070ffcd008e49cf148f7a6fea7332d223f14a890";
+    version = "50.1.0";
+    sha512 = "2jwpk3aymkcq9f4xhzc31sb1c90vy3dvyqq2hvw97vk9dw7rgvv2cki10ns5cshbc4k57yd3j8nm7ppy2kw6na6771mj6sbijdjw39p";
   };
 
   firefox-esr-unwrapped = common {
     pname = "firefox-esr";
-    version = "45.3.0esr";
-    sha512 = "ee618aec579625122c3e511a7ac83ac4db9718f5695b6fe6250717602178bae9bb7e5ebe8764f4d33ecf44d3db13abfed0d24c1ec71e64a1087fb6d5a579b0c0";
+    version = "45.6.0esr";
+    sha512 = "086ci461hmz6kdn0ly9dlc723gc117si4a11a1c51gh79hczhahdaxg5s4r3k59rb43gpwxrlvm4wx1aka36bsihnh8a4caxnp72v5r";
   };
 
 }

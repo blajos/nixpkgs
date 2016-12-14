@@ -10,6 +10,14 @@ stdenv.mkDerivation rec {
     sha256 = "0g336cr0bw6dax1q48bblphmchgihx9p1pjmxdnrd6sh3qci3fgz";
   };
 
+  patches = [
+    (fetchpatch {
+      name = "CVE-2016-4658.patch";
+      url = "https://git.gnome.org/browse/libxml2/patch/?id=c1d1f7121194036608bf555f08d3062a36fd344b";
+      sha256 = "0q7i5qgwgzp2x4r820mqq3nx69bgkd7n0v00j28wa6hndbfaaxmb";
+    })
+  ];
+
   # https://bugzilla.gnome.org/show_bug.cgi?id=766834#c5
   postPatch = "patch -R < " + fetchpatch {
     name = "schemas-validity.patch";
@@ -17,7 +25,7 @@ stdenv.mkDerivation rec {
     sha256 = "0i7a0nhxwkxx6dkm8917qn0bsfn1av6ghg2f4dxanxi4bn4b1jjn";
   };
 
-  outputs = [ "dev" "out" "bin" "doc" ]
+  outputs = [ "bin" "dev" "out" "doc" ]
     ++ lib.optional supportPython "py";
   propagatedBuildOutputs = "out bin" + lib.optionalString supportPython " py";
 

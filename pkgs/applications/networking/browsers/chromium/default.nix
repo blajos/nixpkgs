@@ -1,4 +1,4 @@
-{ newScope, stdenv, makeWrapper, makeDesktopItem, ed
+{ newScope, stdenv, makeWrapper, makeDesktopItem, ed, overrideCC, pkgs
 
 # package customization
 , channel ? "stable"
@@ -12,19 +12,22 @@
 , enableWideVine ? false
 , cupsSupport ? true
 , pulseSupport ? false
-, hiDPISupport ? false
 }:
 
 let
   callPackage = newScope chromium;
 
   chromium = {
+    stdenv = overrideCC stdenv (pkgs.callPackage ./cc-wrapper {
+      name = "rspfile";
+      inherit (stdenv.cc) nativeTools nativeLibc nativePrefix cc libc;
+    });
     upstream-info = (callPackage ./update.nix {}).getChannel channel;
 
     mkChromiumDerivation = callPackage ./common.nix {
       inherit enableSELinux enableNaCl enableHotwording gnomeSupport
               gnomeKeyringSupport proprietaryCodecs cupsSupport pulseSupport
-              hiDPISupport;
+              enableWideVine;
     };
 
     browser = callPackage ./browser.nix { inherit channel; };
@@ -74,9 +77,8 @@ in stdenv.mkDerivation {
     browserBinary = "${chromium.browser}/libexec/chromium/chromium";
     getWrapperFlags = plugin: "$(< \"${plugin}/nix-support/wrapper-flags\")";
   in with stdenv.lib; ''
-    mkdir -p "$out/bin" "$out/share/applications"
+    mkdir -p "$out/bin"
 
-    ln -s "${chromium.browser}/share" "$out/share"
     eval makeWrapper "${browserBinary}" "$out/bin/chromium" \
       ${concatMapStringsSep " " getWrapperFlags chromium.plugins.enabled}
 
@@ -100,7 +102,11 @@ in stdenv.mkDerivation {
     ln -sv "${chromium.browser.sandbox}" "$sandbox"
 
     ln -s "$out/bin/chromium" "$out/bin/chromium-browser"
-    ln -s "${chromium.browser}/share/icons" "$out/share/icons"
+
+    mkdir -p "$out/share/applications"
+    for f in '${chromium.browser}'/share/*; do
+      ln -s -t "$out/share/" "$f"
+    done
     cp -v "${desktopItem}/share/applications/"* "$out/share/applications"
   '';
 

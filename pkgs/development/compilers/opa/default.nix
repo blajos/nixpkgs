@@ -16,7 +16,7 @@ stdenv.mkDerivation rec {
 
   # Paths so the opa compiler code generation will use the same programs as were
   # used to build opa.
-  codeGeneratorPaths = "${ocamlPackages.ocaml}/bin:${gcc}/bin:${binutils}/bin:${gnumake}/bin:${nodejs}/bin";
+  codeGeneratorPaths = stdenv.lib.makeBinPath [ ocamlPackages.ocaml gcc binutils gnumake nodejs ];
 
   preConfigure = ''
     patchShebangs .
@@ -63,5 +63,8 @@ stdenv.mkDerivation rec {
     license = stdenv.lib.licenses.gpl3;
     maintainers = [ stdenv.lib.maintainers.kkallio ];
     platforms = with stdenv.lib.platforms; linux;
+    # opa was built with nodejs 0.10 which reached end of LTS
+    # in October 216, it doesn't built with nodejs 4.x
+    broken = true;
   };
 }

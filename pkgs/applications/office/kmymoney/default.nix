@@ -4,6 +4,7 @@
 
 stdenv.mkDerivation rec {
   name = "kmymoney-${version}";
+  # If you bump this version to > 4.8.0, please remove the seqaccessmgrtest.patch. It will be no longer necessary.
   version = "4.8.0";
 
   src = fetchurl {
@@ -21,7 +22,10 @@ stdenv.mkDerivation rec {
 
   KDEDIRS = libalkimia;
 
-  patches = [ ./qgpgme.patch ];
+  patches = [
+    ./qgpgme.patch
+    ./seqaccessmgrtest.patch
+  ];
 
   meta = {
     homepage = http://kmymoney2.sourceforge.net/;

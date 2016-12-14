@@ -7,11 +7,11 @@
 let
   inherit (pythonPackages) python cython buildPythonApplication;
 in buildPythonApplication rec {
-  name = "xpra-0.17.4";
+  name = "xpra-0.17.6";
   namePrefix = "";
   src = fetchurl {
     url = "http://xpra.org/src/${name}.tar.xz";
-    sha256 = "0v9xiy1d1izjnpy4d4l5zwfhb6z7x35nn8nzzn7a5mnsim5qb9wj";
+    sha256 = "1z7v58m45g10icpv22qg4dipafcfsdqkxqz73z3rwsb6r0kdyrpj";
   };
 
   buildInputs = [
@@ -51,7 +51,7 @@ in buildPythonApplication rec {
       --set XPRA_LOG_DIR "\$HOME/.xpra" \
       --set XPRA_INSTALL_PREFIX "$out" \
       --prefix LD_LIBRARY_PATH : ${libfakeXinerama}/lib \
-      --prefix PATH : ${getopt}/bin:${xorgserver.out}/bin:${xauth}/bin:${which}/bin:${utillinux}/bin
+      --prefix PATH : ${stdenv.lib.makeBinPath [ getopt xorgserver xauth which utillinux ]}
   '';
 
   preCheck = "exit 0";
@@ -60,7 +60,7 @@ in buildPythonApplication rec {
   #postFixup = ''
   #  sed -i '2iexport XKB_BINDIR="${xkbcomp}/bin"' $out/bin/xpra
   #  sed -i '3iexport FONTCONFIG_FILE="${fontsConf}"' $out/bin/xpra
-  #  sed -i '4iexport PATH=${getopt}/bin:${xorgserver.out}/bin:${xauth}/bin:${which}/bin:${utillinux}/bin\${PATH:+:}\$PATH' $out/bin/xpra
+  #  sed -i '4iexport PATH=${stdenv.lib.makeBinPath [ getopt xorgserver xauth which utillinux ]}\${PATH:+:}\$PATH' $out/bin/xpra
   #'';
 
 

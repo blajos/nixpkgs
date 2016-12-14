@@ -504,6 +504,31 @@ sub screenshot {
     }, { image => $name } );
 }
 
+# Get the text of TTY<n>
+sub getTTYText {
+    my ($self, $tty) = @_;
+
+    my ($status, $out) = $self->execute("fold -w 80 /dev/vcs${tty}");
+    return $out;
+}
+
+# Wait until TTY<n>'s text matches a particular regular expression
+sub waitUntilTTYMatches {
+    my ($self, $tty, $regexp) = @_;
+
+    $self->nest("waiting for $regexp to appear on tty $tty", sub {
+        retry sub {
+            return 1 if $self->getTTYText($tty) =~ /$regexp/;
+        }
+    });
+}
+
+# Debugging: Dump the contents of the TTY<n>
+sub dumpTTYContents {
+    my ($self, $tty) = @_;
+
+    $self->execute("fold -w 80 /dev/vcs${tty} | systemd-cat");
+}
 
 # Take a screenshot and return the result as text using optical character
 # recognition.
@@ -566,14 +591,25 @@ sub getWindowNames {
 }
 
 
+sub hasWindow {
+    my ($self, $regexp) = @_;
+    my @names = $self->getWindowNames;
+    foreach my $n (@names) {
+        if ($n =~ /$regexp/) {
+            $self->log("match '$n' on '$regexp'");
+            return 1;
+        } else {
+            $self->log("no match '$n' on '$regexp'");
+        }
+    }
+}
+
+
 sub waitForWindow {
     my ($self, $regexp) = @_;
     $self->nest("waiting for a window to appear", sub {
         retry sub {
-            my @names = $self->getWindowNames;
-            foreach my $n (@names) {
-                return 1 if $n =~ /$regexp/;
-            }
+            return $self->hasWindow($regexp)
         }
     });
 }

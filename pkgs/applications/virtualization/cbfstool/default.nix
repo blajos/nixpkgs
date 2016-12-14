@@ -12,6 +12,9 @@ stdenv.mkDerivation rec {
 
   buildInputs = [ iasl flex bison ];
 
+  hardeningDisable = [ "fortify" ];
+  CFLAGS = "-Wno-error=sign-compare";
+
   buildPhase = ''
     export LEX=${flex}/bin/flex
     make -C util/cbfstool
@@ -32,4 +35,3 @@ stdenv.mkDerivation rec {
     platforms = platforms.linux;
   };
 }
-

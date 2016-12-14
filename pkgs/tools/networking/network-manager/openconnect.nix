@@ -4,7 +4,7 @@
 stdenv.mkDerivation rec {
   name    = "${pname}${if withGnome then "-gnome" else ""}-${version}";
   pname   = "NetworkManager-openconnect";
-  version = networkmanager.version;
+  version = "1.2.2";
 
   src = fetchurl {
     url    = "mirror://gnome/sources/${pname}/${networkmanager.major}/${pname}-${version}.tar.xz";
@@ -23,10 +23,10 @@ stdenv.mkDerivation rec {
 
   preConfigure = ''
      substituteInPlace "configure" \
-       --replace "/sbin/sysctl" "${procps}/sbin/sysctl"
+       --replace "/sbin/sysctl" "${procps}/bin/sysctl"
      substituteInPlace "src/nm-openconnect-service.c" \
-       --replace "/usr/sbin/openconnect" "${openconnect}/sbin/openconnect" \
-       --replace "/sbin/modprobe" "${kmod}/sbin/modprobe"
+       --replace "/usr/sbin/openconnect" "${openconnect}/bin/openconnect" \
+       --replace "/sbin/modprobe" "${kmod}/bin/modprobe"
   '';
 
   meta = {

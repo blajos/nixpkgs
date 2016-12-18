@@ -17698,5 +17698,5 @@ in
 
   xulrunner = firefox-unwrapped;
 
-  snx = callPackage ../tools/networking/snx {};
+  snx = callPackage_i686 ../tools/networking/snx {};
 }

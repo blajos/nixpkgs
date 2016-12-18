@@ -17705,4 +17705,7 @@ in
 
   puppet = callPackage ../tools/system/puppet {};
 
+  xulrunner = firefox-unwrapped;
+
+  snx = callPackage ../tools/networking/snx {};
 }

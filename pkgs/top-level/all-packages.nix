@@ -17699,4 +17699,6 @@ in
   xulrunner = firefox-unwrapped;
 
   snx = callPackage_i686 ../tools/networking/snx {};
+
+  puppet-lint = callPackage ../tools/system/puppet-lint {};
 }

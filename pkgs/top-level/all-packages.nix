@@ -17697,4 +17697,6 @@ in
   libgtop11dotnet = callPackage ../tools/security/libgtop11dotnet {};
 
   xulrunner = firefox-unwrapped;
+
+  snx = callPackage ../tools/networking/snx {};
 }

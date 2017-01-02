@@ -1795,11 +1795,11 @@ in modules // {
   });
 
   beautifulsoup4 = buildPythonPackage (rec {
-    name = "beautifulsoup4-4.4.1";
+    name = "beautifulsoup4-4.5.1";
 
     src = pkgs.fetchurl {
       url = "mirror://pypi/b/beautifulsoup4/${name}.tar.gz";
-      sha256 = "1d36lc4pfkvl74fmzdib2nqnvknm0jddgf2n9yd7im150qyh3m47";
+      sha256 = "1qgmhw65ncsgccjhslgkkszif47q6gvxwqv4mim17agxd81p951w";
     };
 
     buildInputs = [ self.nose ];
@@ -2522,17 +2522,39 @@ in modules // {
     };
   };
 
+  # Needed for bleach 1.5.0
+  html5lib_0_9999999 = self.html5lib.override rec {
+    name = "html5lib-${version}";
+    buildInputs = with self; [ nose flake8 ];
+    propagatedBuildInputs = with self; [ six ];
+    checkPhase = ''
+      nosetests
+    '';
+
+    version = "0.9999999";
+    src = pkgs.fetchurl {
+      url = "https://github.com/html5lib/html5lib-python/archive/0.9999999.tar.gz";
+      sha256 = "1s6wdbrjzw5jhyfbskf4nj1i5bjpjqq9f89a7r1rl59rhpwmfhhq";
+    };
+  };
+
   bleach = buildPythonPackage rec {
-    version = "v1.4.3";
-    name = "bleach-${version}";
+    pname = "bleach";
+    version = "1.5.0";
+    name = "${pname}-${version}";
 
     src = pkgs.fetchurl {
-      url = "http://github.com/jsocol/bleach/archive/${version}.tar.gz";
-      sha256 = "0mk8780ilip0m890rapbckngw8k42gca3551kri297pyylr06l5m";
+      url = "mirror://pypi/${builtins.substring 0 1 pname}/${pname}/${name}.tar.gz";
+      sha256 = "978e758599b54cd3caa2e160d74102879b230ea8dc93871d0783721eef58bc65";
     };
 
-    buildInputs = with self; [ nose ];
-    propagatedBuildInputs = with self; [ six html5lib ];
+    buildInputs = with self; [ pytest pytestrunner ];
+    propagatedBuildInputs = with self; [ six html5lib_0_9999999 ];
+
+    postPatch = ''
+      substituteInPlace setup.py --replace "==3.0.3" ""
+      substituteInPlace setup.py --replace ">=0.999,!=0.9999,!=0.99999,<0.99999999" ""
+    '';
 
     meta = {
       description = "An easy, HTML5, whitelisting HTML sanitizer";
@@ -4881,6 +4903,8 @@ in modules // {
       license = licenses.mit;
     };
   });
+
+  pytest-expect = callPackage ../development/python-modules/pytest-expect { };
 
   pytest-virtualenv = buildPythonPackage rec {
     name = "${pname}-${version}";
@@ -11607,20 +11631,22 @@ in modules // {
 
 
   html5lib = buildPythonPackage (rec {
-    version = "0.999";
+    version = "0.999999999";
     name = "html5lib-${version}";
 
     src = pkgs.fetchurl {
       url = "http://github.com/html5lib/html5lib-python/archive/${version}.tar.gz";
-      sha256 = "1kxl36p0csssaf37zbbc9p4h8l1s7yb1qnfv3d4nixplvrxqkybp";
+      sha256 = "09j6194f5mlnd5xwbavwvnndwl1x91jw74shxl6hcxjp4fxg3h05";
     };
 
-    buildInputs = with self; [ nose flake8 ];
+    buildInputs = with self; [ flake8 pytest pytest-expect mock ];
     propagatedBuildInputs = with self; [
-      six
+      six webencodings
     ] ++ optionals isPy26 [ ordereddict ];
 
-    checkPhase = "nosetests";
+    checkPhase = ''
+      py.test
+    '';
 
     meta = {
       homepage = https://github.com/html5lib/html5lib-python;
@@ -24360,6 +24386,8 @@ in modules // {
     };
   };
 
+  u-msgpack-python = callPackage ../development/python-modules/u-msgpack-python { };
+
   umalqurra = buildPythonPackage rec {
     name = "umalqurra-${version}";
     version = "0.2";
@@ -24880,6 +24908,7 @@ in modules // {
     };
   };
 
+  webencodings = callPackage ../development/python-modules/webencodings { };
 
   wand = buildPythonPackage rec {
     name = "Wand-0.3.5";

@@ -1575,6 +1575,12 @@ with pkgs;
 
   eid-viewer = callPackage ../tools/security/eid-viewer { };
 
+  snx = callPackage_i686 ../tools/networking/snx {};
+
+  puppet-lint = callPackage ../tools/system/puppet-lint {};
+
+  puppet = callPackage ../tools/system/puppet {};
+
   ### DEVELOPMENT / EMSCRIPTEN
 
   buildEmscriptenPackage = callPackage ../development/em-modules/generic { };
